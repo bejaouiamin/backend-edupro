@@ -43,9 +43,14 @@ public class AuthService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .dateOfBirth(request.getDateOfBirth())
                 .accountLocked(false)
                 .enabled(false)
                 .role(userRole)
+                .picture(request.getPicture())
+                .bio(request.getBio())
+                .adress(request.getAdress())
+                .phone(request.getPhone())
                 .build();
         userRepository.save(user);
         sendValidationEmail(user);
@@ -53,7 +58,7 @@ public class AuthService {
 
     private Role determineUserRole(RegistrationRequest request) {
         // Implement your logic to determine the role
-        return Role.ETUDIANT; // Example default role, adjust as needed
+        return request.getRole(); // Example default role, adjust as needed
     }
 
     //@Transactional
