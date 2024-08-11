@@ -36,7 +36,7 @@ public class AuthService {
     private final TokenRepository tokenRepository;
 
     public void register(RegistrationRequest request) throws MessagingException {
-        Role userRole = determineUserRole(request); // Adjust this method to determine the role
+        Role userRole = determineUserRole(request);
 
         var user = User.builder()
                 .firstName(request.getFirstName())
@@ -57,8 +57,14 @@ public class AuthService {
     }
 
     private Role determineUserRole(RegistrationRequest request) {
-        // Implement your logic to determine the role
-        return request.getRole(); // Example default role, adjust as needed
+        // Example logic to determine role based on the request
+        // Adjust this as per your application's requirements
+        if (request.getRole() == Role.TUTEUR) {
+            return Role.TUTEUR;
+        } else if (request.getRole() == Role.ETUDIANT) {
+            return Role.ETUDIANT;
+        }
+        throw new IllegalArgumentException("Invalid role: " + request.getRole());
     }
 
     //@Transactional
@@ -133,8 +139,16 @@ public class AuthService {
         claims.put("Username", user.getUsername());
 
         var jwtToken = jwtService.generateToken(claims, (User) auth.getPrincipal());
+        System.out.println("Generated JWT Token: " + jwtToken); // Log the generated token
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
+
+    // Method to find user by email
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    }
+
 }

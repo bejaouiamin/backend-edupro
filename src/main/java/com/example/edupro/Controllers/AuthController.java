@@ -1,10 +1,13 @@
 package com.example.edupro.Controllers;
 
+import com.example.edupro.Entity.User;
 import com.example.edupro.Service.AuthService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -40,6 +43,13 @@ public class AuthController {
             @RequestParam String token
     ) throws MessagingException {
         authService.activateAccount(token);
+    }
+
+    @GetMapping("/me")
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        return authService.findByEmail(currentUserName); // Assuming you identify users by email
     }
 
 

@@ -32,30 +32,20 @@ public class User implements UserDetails , Principal {
     private int id;
 
     private String firstName;
-
     private String lastName;
-
     private LocalDate dateOfBirth;
-
     private boolean accountLocked;
-
     private boolean enabled;
-
     @Column(unique = true)
     private String email;
-
     private String password;
-
     @Enumerated(EnumType.STRING)
     private Role role;
-
-
-    private String picture;
-
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] picture;
     private String bio;
-
     private String adress;
-
     private String phone;
 
     @CreatedDate

@@ -55,23 +55,27 @@ public class BeansConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200")); // Allow your Angular app
         config.setAllowedHeaders(Arrays.asList(
-                ORIGIN,
-                CONTENT_TYPE,
-                ACCEPT,
-                AUTHORIZATION
+                "Origin",
+                "Content-Type",
+                "Accept",
+                "Authorization",
+                "X-Requested-With"  // Allows AJAX requests
         ));
         config.setAllowedMethods(Arrays.asList(
                 "GET",
                 "POST",
-                "DELETE",
                 "PUT",
-                "PATCH"
+                "DELETE",
+                "OPTIONS"  // Allow preflight requests
+        ));
+        config.setExposedHeaders(Arrays.asList(
+                "Authorization"  // Expose headers like Authorization to the client
         ));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
-
     }
+
 
 }

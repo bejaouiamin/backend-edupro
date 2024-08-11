@@ -19,7 +19,7 @@ public class RegistrationRequest {
     private String email;
     private String password;
     private Role role;
-    private String picture;
+    private byte[] picture;
     private String bio;
     private String adress;
     private String phone;
