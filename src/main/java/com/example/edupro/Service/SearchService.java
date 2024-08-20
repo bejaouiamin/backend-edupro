@@ -20,6 +20,7 @@ public class SearchService {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
     public List<User> searchTutors(String subjectName, String adress) {
         List<Subject> subjects = subjectRepository.findByNameContainingIgnoreCase(subjectName);
         // Filter users by address, subjects, and role
@@ -28,5 +29,8 @@ public class SearchService {
                 .filter(user -> user.getRole() == Role.TUTEUR)
                 .collect(Collectors.toList());
         return tutors;
+    }
+    public Subject save(Subject subject) {
+        return subjectRepository.save(subject); // This will now return the saved entity
     }
 }

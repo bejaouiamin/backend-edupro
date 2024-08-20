@@ -3,6 +3,7 @@ package com.example.edupro.Service;
 import com.example.edupro.Entity.Role;
 import com.example.edupro.Entity.User;
 import com.example.edupro.Repositories.UserRepository;
+import com.example.edupro.Token.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
 
 
     public List<User> getAllUser() {
@@ -31,7 +35,13 @@ public class UserService {
     }
 
     public void deleteUser(Integer id) {
+        tokenRepository.deleteByUserId(id);
         userRepository.deleteById(id);
+    }
+
+    // Add this method to save the user after clearing associations
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     public List<User> getUsersByRole(Role role) {

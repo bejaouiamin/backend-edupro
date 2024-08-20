@@ -48,7 +48,6 @@ public class Usercontroller {
         }
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         if (userService.getUserById(id).isPresent()) {
@@ -58,6 +57,9 @@ public class Usercontroller {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+
 
     @GetMapping("/role/tuteur")
     public List<User> getUsersByRoleTuteur() {

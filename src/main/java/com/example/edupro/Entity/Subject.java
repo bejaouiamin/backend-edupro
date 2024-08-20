@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,13 +25,14 @@ public class Subject {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
+    @Column(unique = true)
     private String name;
 
 
     @JsonIgnore
     @JsonManagedReference
-    @ManyToMany(mappedBy = "subjects")
-    private List<User> users;
+    @ManyToMany(mappedBy = "subjects") // mappedBy indicates the owning side
+    private List<User> users = new ArrayList<>(); // Initialize here
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
