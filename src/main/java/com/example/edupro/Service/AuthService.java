@@ -151,4 +151,10 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
+    // Inside AuthService class
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+
 }
