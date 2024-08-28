@@ -3,6 +3,7 @@ package com.example.edupro.Controllers;
 import com.example.edupro.Entity.User;
 import com.example.edupro.Security.JwtService;
 import com.example.edupro.Service.AuthService;
+import com.example.edupro.Service.PasswordResetService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Payload;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtService jwtservice;
+    private final PasswordResetService passwordResetService;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -88,6 +90,28 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         return authService.findByEmail(currentUserName); // Assuming you identify users by email
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        passwordResetService.processForgotPassword(request.get("email"));
+        return ResponseEntity.ok("Password reset link has been sent to your email.");
+    }
+    @GetMapping("/reset-password")
+    public ResponseEntity<?> validateResetToken(@RequestParam String token) {
+        if (passwordResetService.validatePasswordResetToken(token)) {
+            return ResponseEntity.ok("Token is valid.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired token.");
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("password");
+        passwordResetService.updatePassword(token, newPassword);
+        return ResponseEntity.ok("Password has been reset.");
     }
 
 

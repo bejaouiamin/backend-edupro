@@ -48,7 +48,7 @@ public class User implements UserDetails , Principal {
     private String bio;
     private String adress;
     private String phone;
-
+    private String resetToken;
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;

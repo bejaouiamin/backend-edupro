@@ -15,5 +15,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
     List<User> findByRole(Role role);
     List<User> findByAdressContainingIgnoreCaseAndSubjectsIn(String adress, List<Subject> subjects);
+    Optional<User> findByResetToken(String resetToken);
 
 }

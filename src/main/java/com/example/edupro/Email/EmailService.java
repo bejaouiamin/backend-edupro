@@ -55,12 +55,15 @@ public class EmailService {
         Context context = new Context();
         context.setVariables(properties);
 
+        // Additional logging to verify the URL
+        log.info("Reset URL: " + confirmationUrl);
         helper.setFrom("bejaouimohamed.work@gmail.com");
         helper.setTo(to);
         helper.setSubject(subject);
 
         try {
             String template = templateEngine.process(templateName, context);
+            log.info("Processed Email Content: " + template);
             helper.setText(template, true);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
@@ -68,4 +71,5 @@ public class EmailService {
             throw e;  // Optionally rethrow to handle in the caller method
         }
     }
+
 }
