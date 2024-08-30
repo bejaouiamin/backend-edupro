@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins ="http://localhost:8080",allowCredentials = "true")
@@ -46,26 +47,32 @@ public class SearchController {
     public ResponseEntity<String> addSubject(@RequestBody Subject subject, @RequestParam Integer userId) {
         System.out.println("Received request to add subject with userId: " + userId);
 
+        // Fetch the user by ID
         User user = userService.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        // Check if the subject name already exists for the user
-        boolean subjectExists = user.getSubjects().stream()
-                .anyMatch(existingSubject -> existingSubject.getName().equalsIgnoreCase(subject.getName()));
-
-        if (subjectExists) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Subject already added.");
+        // Check if the user already has a subject
+        if (!user.getSubjects().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already has a subject.");
         }
 
-        // Save the new subject
-        Subject savedSubject = searchService.save(subject); // Ensure subjectService saves and returns the entity
+        // Check if the subject already exists in the database
+        Optional<Subject> existingSubjectOptional = searchService.findByName(subject.getName());
 
-        user.getSubjects().add(savedSubject);
-        userService.saveUser(user); // Make sure to save the user after updating their subjects
+        // If the subject exists, link it to the user, otherwise, create a new one
+        if (existingSubjectOptional.isPresent()) {
+            user.getSubjects().add(existingSubjectOptional.get());
+        } else {
+            // Save the new subject
+            Subject savedSubject = searchService.save(subject);
+            user.getSubjects().add(savedSubject);
+        }
+
+        // Save the user with the linked subject
+        userService.saveUser(user);
 
         return ResponseEntity.ok("Subject added successfully.");
     }
-
 
     @Transactional
     @DeleteMapping("/deletesubject")
@@ -76,22 +83,27 @@ public class SearchController {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new RuntimeException("Subject not found with id: " + subjectId));
 
+        // Check if the user has the subject
         if (!user.getSubjects().contains(subject)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Subject not found for this user.");
         }
 
-        subject.getUsers().remove(user);
-
-        subjectRepository.saveAndFlush(subject);
-
+        // Remove the subject from the user's list of subjects
         user.getSubjects().remove(subject);
+        userService.saveUser(user); // Save user to update the relationship
 
-        userService.saveUser(user);
+        // Remove the user from the subject's list of users
+        subject.getUsers().remove(user);
+        subjectRepository.saveAndFlush(subject); // Save subject to update the relationship
 
-        subjectRepository.delete(subject);
+        // If no users are associated with the subject anymore, delete the subject
+        if (subject.getUsers().isEmpty()) {
+            subjectRepository.delete(subject);
+        }
 
         return ResponseEntity.ok("Subject successfully deleted.");
     }
+
 
 
 

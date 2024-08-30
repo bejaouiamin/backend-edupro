@@ -32,7 +32,7 @@ public class PasswordResetService {
             user.setResetToken(token);
             userRepository.save(user);
 
-            String resetUrl = "http://localhost:4200/home?token=" + token;
+            String resetUrl = "http://localhost:4200/reset-password?token=" + token;
             try {
                 emailService.sendEmail(
                         user.getEmail(),

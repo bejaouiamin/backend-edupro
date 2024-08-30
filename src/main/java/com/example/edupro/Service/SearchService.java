@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,4 +34,8 @@ public class SearchService {
     public Subject save(Subject subject) {
         return subjectRepository.save(subject); // This will now return the saved entity
     }
+    public Optional<Subject> findByName(String name) {
+        return subjectRepository.findByName(name);
+    }
+
 }

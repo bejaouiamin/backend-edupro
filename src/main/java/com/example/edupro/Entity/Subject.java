@@ -25,7 +25,6 @@ public class Subject {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-    @Column(unique = true)
     private String name;
 
 
