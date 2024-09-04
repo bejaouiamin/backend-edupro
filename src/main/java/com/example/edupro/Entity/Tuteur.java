@@ -14,7 +14,6 @@ public class Tuteur {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-
     @MapsId
     @OneToOne
     @JoinColumn(name = "id")
@@ -26,8 +25,8 @@ public class Tuteur {
 
     private String experience;
 
-    private String availability;
+    private Integer period;
 
-
+    private String skills;
 
 }

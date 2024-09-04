@@ -30,7 +30,7 @@ import java.util.List;
 public class User implements UserDetails , Principal {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private int id;
+    private Integer  id;
 
     private String firstName;
     private String lastName;

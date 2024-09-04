@@ -100,7 +100,6 @@ public class SearchController {
         if (subject.getUsers().isEmpty()) {
             subjectRepository.delete(subject);
         }
-
         return ResponseEntity.ok("Subject successfully deleted.");
     }
 

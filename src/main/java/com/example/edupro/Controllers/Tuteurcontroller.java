@@ -1,7 +1,9 @@
 package com.example.edupro.Controllers;
 
 import com.example.edupro.Entity.Tuteur;
+import com.example.edupro.Entity.User;
 import com.example.edupro.Service.TuteurService;
+import com.example.edupro.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ public class Tuteurcontroller {
 
     @Autowired
     private TuteurService tuteurService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public List<Tuteur> getAllTuteurs() {
@@ -32,18 +36,33 @@ public class Tuteurcontroller {
 
     @PostMapping("/addTuteur")
     public Tuteur createTuteur(@RequestBody Tuteur tuteur) {
+        if (tuteur.getUser() == null || tuteur.getUser().getId() == null) {
+            throw new IllegalArgumentException("User must be set before creating Tuteur");
+        }
+
+        // Fetch the user from the database to ensure it is attached
+        Optional<User> userOptional = userService.getUserById(tuteur.getUser().getId()); // Assuming you have a userService that can fetch users
+        if (userOptional.isEmpty()) {
+            throw new IllegalArgumentException("User not found with ID: " + tuteur.getUser().getId());
+        }
+
+        // Set the attached User entity to the Tuteur
+        tuteur.setUser(userOptional.get());
+
+        // Now persist the Tuteur entity
         return tuteurService.createTuteur(tuteur);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Tuteur> updateTuteur(@PathVariable Integer id, @RequestBody Tuteur tuteur) {
-        if (tuteurService.getTuteurById(id).isPresent()) {
-            tuteur.setId(id);
-            return ResponseEntity.ok(tuteurService.createTuteur(tuteur));
-        } else {
-            return ResponseEntity.notFound().build();
+
+
+    @PutMapping("/updateTuteur")
+    public Tuteur updateTuteur(@RequestBody Tuteur tuteur) {
+        if (tuteur.getUser() == null || tuteur.getUser().getId() == null) {
+            throw new IllegalArgumentException("User must be set before updating Tuteur");
         }
+        return tuteurService.updateTuteur(tuteur);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTuteur(@PathVariable Integer id) {
