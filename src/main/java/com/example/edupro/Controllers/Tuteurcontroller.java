@@ -29,10 +29,12 @@ public class Tuteurcontroller {
 
     @GetMapping("/{id}")
     public ResponseEntity<Tuteur> getTuteurById(@PathVariable Integer id) {
+        System.out.println("Received ID: " + id); // Add this line
         Optional<Tuteur> tuteur = tuteurService.getTuteurById(id);
         return tuteur.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     @PostMapping("/addTuteur")
     public Tuteur createTuteur(@RequestBody Tuteur tuteur) {
