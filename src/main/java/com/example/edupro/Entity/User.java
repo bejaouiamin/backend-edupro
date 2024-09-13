@@ -45,6 +45,7 @@ public class User implements UserDetails , Principal {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] picture;
+    @Column(length = 3000) // Set max length to 3000
     private String bio;
     private String adress;
     private String phone;

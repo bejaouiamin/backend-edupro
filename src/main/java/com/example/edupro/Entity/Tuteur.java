@@ -4,6 +4,8 @@ package com.example.edupro.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -20,13 +22,11 @@ public class Tuteur {
     private User user;
 
     private String title;
-
     private String educationlevel;
-
     private String experience;
-
     private Integer period;
-
-    private String skills;
+    @ElementCollection
+    @CollectionTable(name = "tuteur_skills", joinColumns = @JoinColumn(name = "tuteur_id"))
+    private List<Skill> skills;
 
 }
